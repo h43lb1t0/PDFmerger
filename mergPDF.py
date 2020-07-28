@@ -1,6 +1,5 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
 import tkinter as tk
-#from tkinter import *
 from tkinter import filedialog
 from tkinter import font
 import time
@@ -63,7 +62,7 @@ def mergeGUI():
     infotext.pack()
     outputfilename = tk.Entry(root_merge, bd=3)
     outputfilename.pack(side=tk.TOP)
-    merge = tk.Button(root_merge, command=lambda : mergePDF(outputfilename.get() + '.pdf'), height=180, width=166, bg=mergecollor, activebackground="#3d9dc2", image = img_merge)
+    merge = tk.Button(root_merge, command=lambda : mergePDF(outputfilename.get() + '.pdf', both=False), height=180, width=166, bg=mergecollor, activebackground="#3d9dc2", image = img_merge)
     merge.pack(side=tk.BOTTOM)
     root_merge.mainloop()
 
@@ -108,11 +107,11 @@ def bothGUI():
     infotext2.pack(side=tk.TOP)
     namefile = tk.Entry(root_both, bd=3)
     namefile.pack(side=tk.TOP)
-    doboth = tk.Button(root_both, command=lambda : print('1'), height=180, width=166, bg=bothcollor, activebackground="#3d9dc2", image = img_both)
+    doboth = tk.Button(root_both, command=lambda : mergeGUI(), height=180, width=166, bg=bothcollor, activebackground="#3d9dc2", image = img_both)
     doboth.pack(side=tk.TOP)
     root_both.mainloop()
 
-def mergePDF(outputfilename):
+def mergePDF(outputfilename, both):
     if outputfilename == ".pdf":
         change_pwHint('No Name entered', 'red')
         return
@@ -128,14 +127,15 @@ def mergePDF(outputfilename):
         
     with open(savedic + '/' + outputfilename, 'wb') as out:
         if pdf_reader.getNumPages() != 0:
-            change_pwHint('Sucsess', 'blue')
-            pdf_writer.write(out)
+            if both == False:
+                change_pwHint('Sucsess', 'blue')
+                pdf_writer.write(out)
+            else:
+                doBoth(out)
         else:
             change_pwHint('failed', 'red')
     time.sleep(5)
     root_merge.destroy()
-
-
 
 def encryptPDF(password, namefile):
     if password == "":
@@ -178,6 +178,10 @@ def encryptPDF(password, namefile):
                 change_pwHint('failed', 'red')
         time.sleep(5)
         root_encrypt.destroy()
+
+def doBoth(out):
+    pass
+
 
 def change_pwHint(output_text, color):
     infotext['text'] = output_text
